@@ -1,4 +1,5 @@
 export const NAVIGATIONS = {
-    HOME: 'Home',
+    HOME: 'Namai',
     LAB2: 'Laboratorinis 2',
+    LAB3: 'Laboratorinis 3',
 };
