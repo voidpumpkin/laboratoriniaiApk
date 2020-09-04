@@ -6,14 +6,10 @@ import { Appbar } from 'react-native-paper';
 import HomeScreen from './HomeScreen';
 import Lab2 from './lab2/Lab2';
 import { useTheme } from 'react-native-paper';
+import { NAVIGATIONS } from './constants';
 
 const { Header, BackAction, Content } = Appbar;
 const { Navigator: StackNavigator, Screen } = createStackNavigator();
-
-export const NAVIGATIONS = {
-    HOME: 'Home',
-    LAB2: 'Laboratorinis 2',
-};
 
 const Navigator = () => {
     const { colors } = useTheme();

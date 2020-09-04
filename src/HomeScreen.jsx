@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
-import { NAVIGATIONS } from './Navigator';
+import { NAVIGATIONS } from './constants';
 
 const HomeScreen = ({ navigation }) => {
     const { colors } = useTheme();
