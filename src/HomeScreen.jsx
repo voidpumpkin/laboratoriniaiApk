@@ -28,6 +28,13 @@ const HomeScreen = ({ navigation }) => {
             >
                 Laboratorinis 3
             </Button>
+            <Button
+                style={styles.button}
+                mode="contained"
+                onPress={() => navigation.navigate(NAVIGATIONS.LAB4)}
+            >
+                Laboratorinis 4
+            </Button>
         </View>
     );
 };
