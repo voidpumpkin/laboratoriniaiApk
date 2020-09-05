@@ -18,7 +18,8 @@ const Lab3 = () => {
     const [showTimePicker, setShowTimePicker] = useState(isIos || false);
     const [willRegister, setWillRegister] = useState(false);
 
-    const time = `${date.getHours().toString()}:${date.getMinutes().toString()}`;
+    const minutes = date.getMinutes();
+    const time = `${date.getHours()}:${minutes < 10 ? '0' + minutes : minutes}`;
 
     const onSave = () => {
         alert(
