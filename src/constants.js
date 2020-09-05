@@ -4,5 +4,6 @@ export const NAVIGATIONS = {
     LAB3: 'Laboratorinis 3',
     LAB4: 'Laboratorinis 4',
     LAB5: 'Laboratorinis 5',
-    LAB6: 'Lab6',
+    LAB6: 'Laboratorinis 6',
+    LAB7: 'Laboratorinis 7',
 };
