@@ -3,6 +3,10 @@ import { View, StyleSheet } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
 import { NAVIGATIONS } from './constants';
 
+const navigationsArr = Object.entries(NAVIGATIONS);
+// eslint-disable-next-line no-unused-vars
+const [_, ...navigationsForButtons] = navigationsArr;
+
 const HomeScreen = ({ navigation }) => {
     const { colors } = useTheme();
     return (
@@ -14,41 +18,17 @@ const HomeScreen = ({ navigation }) => {
                 },
             ]}
         >
-            <Button
-                style={styles.button}
-                mode="contained"
-                onPress={() => navigation.navigate(NAVIGATIONS.LAB2)}
-            >
-                Laboratorinis 2
-            </Button>
-            <Button
-                style={styles.button}
-                mode="contained"
-                onPress={() => navigation.navigate(NAVIGATIONS.LAB3)}
-            >
-                Laboratorinis 3
-            </Button>
-            <Button
-                style={styles.button}
-                mode="contained"
-                onPress={() => navigation.navigate(NAVIGATIONS.LAB4)}
-            >
-                Laboratorinis 4
-            </Button>
-            <Button
-                style={styles.button}
-                mode="contained"
-                onPress={() => navigation.navigate(NAVIGATIONS.LAB5)}
-            >
-                Laboratorinis 5
-            </Button>
-            <Button
-                style={styles.button}
-                mode="contained"
-                onPress={() => navigation.navigate(NAVIGATIONS.LAB6)}
-            >
-                Laboratorinis 6
-            </Button>
+            {/* eslint-disable-next-line no-unused-vars */}
+            {navigationsForButtons.map(([_, NAVIGATION]) => (
+                <Button
+                    style={styles.button}
+                    mode="contained"
+                    onPress={() => navigation.navigate(NAVIGATION)}
+                    key={NAVIGATION}
+                >
+                    {NAVIGATION}
+                </Button>
+            ))}
         </View>
     );
 };
