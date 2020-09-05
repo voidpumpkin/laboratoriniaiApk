@@ -51,6 +51,7 @@ Ar registruosis - ${willRegister ? 'taip' : 'ne'}`
                 value={faculty}
                 onChangeText={(text) => setFaculty(text)}
                 style={styles.input}
+                multiline
             />
             <Text style={{ color: colors.primary }}>Sunkumas:</Text>
             <Stars
@@ -98,7 +99,7 @@ Ar registruosis - ${willRegister ? 'taip' : 'ne'}`
                     display="default"
                     onChange={(event, selectedDate) => {
                         if (!isIos) setShowTimePicker(false);
-                        setDate(selectedDate);
+                        if (selectedDate) setDate(selectedDate);
                     }}
                     textColor={colors.onBackground}
                 />
