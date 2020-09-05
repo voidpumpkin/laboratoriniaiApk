@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, Platform, ScrollView, Picker } from 'react-native';
-import { useTheme, TextInput, Button, Checkbox, Text } from 'react-native-paper';
+import { StyleSheet, Platform, ScrollView, Picker, View } from 'react-native';
+import { useTheme, TextInput, Button, Text, Switch } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Stars from 'react-native-stars';
 import { AntDesign as Icon } from '@expo/vector-icons';
 
-const { Item: CheckboxItem } = Checkbox;
 const isIos = Platform.OS === 'ios';
 
 const Lab3 = () => {
@@ -105,12 +104,10 @@ Ar registruosis - ${willRegister ? 'taip' : 'ne'}`
                     textColor={colors.onBackground}
                 />
             )}
-            <CheckboxItem
-                label="Registruotis"
-                status={willRegister ? 'checked' : 'unchecked'}
-                onPress={() => setWillRegister(!willRegister)}
-                style={styles.input}
-            />
+            <View style={[styles.switchContainer, styles.input]}>
+                <Text>Registruotis </Text>
+                <Switch value={willRegister} onValueChange={() => setWillRegister(!willRegister)} />
+            </View>
             <Button mode="contained" onPress={onSave}>
                 Saugoti
             </Button>
@@ -127,5 +124,10 @@ const styles = StyleSheet.create({
     },
     input: {
         marginBottom: 15,
+    },
+    switchContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
 });
