@@ -5,7 +5,8 @@ const { share, sharedAction, dismissedAction } = Share;
 
 const Lab2 = () => {
     const { colors } = useTheme();
-    const [sharableText, setSharableText] = useState('');
+    const [sharableText, setSharableText] = useState('bobas buvo');
+    const wordCount = (sharableText.match(/\S*/g) || []).filter((word) => word.length).length;
 
     const onShare = async () => {
         try {
@@ -53,7 +54,7 @@ const Lab2 = () => {
             </View>
             <View style={styles.sharableTextContainer}>
                 <Text style={{ color: colors.primary }}>Tekste zodziu skaicius:</Text>
-                <Text style={styles.sharableText}>{sharableText.length}</Text>
+                <Text style={styles.sharableText}>{wordCount}</Text>
             </View>
         </View>
     );
