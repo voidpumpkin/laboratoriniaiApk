@@ -1,6 +1,7 @@
 import React from 'react';
 import { DarkTheme, Provider as PaperProvider } from 'react-native-paper';
 import Navigator from './src/Navigator';
+import { Lab6ContextProvider } from './src/lab6/Lab6Context';
 
 const theme = {
     ...DarkTheme,
@@ -14,7 +15,9 @@ const theme = {
 const App = () => {
     return (
         <PaperProvider theme={theme}>
-            <Navigator />
+            <Lab6ContextProvider>
+                <Navigator />
+            </Lab6ContextProvider>
         </PaperProvider>
     );
 };

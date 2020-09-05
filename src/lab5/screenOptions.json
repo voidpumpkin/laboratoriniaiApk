@@ -1,0 +1,18 @@
+{
+    "transitionSpec": {
+        "open": {
+            "animation": "spring",
+            "config": {
+                "stiffness": 1000000,
+                "damping": 50000
+            }
+        },
+        "close": {
+            "animation": "spring",
+            "config": {
+                "stiffness": 1000000,
+                "damping": 50000
+            }
+        }
+    }
+}
