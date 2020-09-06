@@ -13,6 +13,7 @@ import Lab5 from './lab5/Lab5';
 import screenOptionsLab5 from './lab5/screenOptions.json';
 import Lab6 from './lab6/Lab6';
 import Lab7 from './lab7/Lab7';
+import Lab8 from './lab8/Lab8';
 
 const { Navigator: StackNavigator, Screen } = createStackNavigator();
 
@@ -37,6 +38,7 @@ const Navigator = () => {
                 <Screen name={NAVIGATIONS.LAB5} component={Lab5} options={screenOptionsLab5} />
                 <Screen name={NAVIGATIONS.LAB6} component={Lab6} />
                 <Screen name={NAVIGATIONS.LAB7} component={Lab7} />
+                <Screen name={NAVIGATIONS.LAB8} component={Lab8} />
             </StackNavigator>
         </NavigationContainer>
     );
