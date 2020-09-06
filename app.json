@@ -15,13 +15,21 @@
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "supportsTablet": true
+            "supportsTablet": true,
+            "config": {
+                "googleMapsApiKey": "AIzaSyA0ld-iWfBIgYQ3anrcaxDBPM-fCelpe84"
+            }
         },
         "web": {
             "favicon": "./assets/favicon.png"
         },
         "android": {
-            "useNextNotificationsApi": true
+            "useNextNotificationsApi": true,
+            "config": {
+                "googleMaps": {
+                    "apiKey": "AIzaSyA0ld-iWfBIgYQ3anrcaxDBPM-fCelpe84"
+                }
+            }
         }
     }
 }
