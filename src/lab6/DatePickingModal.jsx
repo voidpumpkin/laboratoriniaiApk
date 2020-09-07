@@ -9,60 +9,60 @@ const isIos = Platform.OS === 'ios';
 const DatePickingModal = () => {
     const { colors } = useTheme();
     const { datePickerState, setDatePickerState } = useContext(Lab6Context);
-    const isDateModalVisible = datePickerState.isVisible;
     const [date, setDate] = useState(new Date());
-    const [mode, setMode] = useState('date');
+    const isDateModalVisible = datePickerState.isVisible;
 
-    const handleClose = () => {
-        const diff = Math.abs(date - new Date());
+    const handleDismiss = () => {
+        setDatePickerState((oldState) => ({
+            ...oldState,
+            isVisible: false,
+        }));
+    };
+
+    const handleClose = (selectedDate = date) => {
+        const diff = Math.abs(selectedDate - new Date());
         const timeDiffrence = Math.floor(diff / 1000 / 60);
         setDatePickerState((oldState) => ({
             ...oldState,
             timeDiffrence,
             isVisible: false,
         }));
-        setMode('date');
     };
 
     const onChange = (event, selectedDate) => {
-        setDate(selectedDate);
-        if (isIos) {
+        if (!selectedDate) {
+            handleDismiss();
             return;
         }
-        if (mode === 'date') {
-            setMode('time');
-        } else {
-            handleClose();
-        }
+        if (!isIos) handleClose(selectedDate);
+        setDate(selectedDate);
     };
-
+    console.log(datePickerState.isVisible, isDateModalVisible);
     return (
         <Portal>
-            <Modal visible={isDateModalVisible} onDismiss={() => handleClose()}>
-                <View
-                    style={{
-                        backgroundColor: colors.surface,
-                        marginHorizontal: 30,
-                        padding: 20,
-                    }}
-                >
-                    {isDateModalVisible && (
+            {isIos ? (
+                <Modal visible={isDateModalVisible} onDismiss={handleDismiss}>
+                    <View
+                        style={{
+                            backgroundColor: colors.surface,
+                            marginHorizontal: 30,
+                            padding: 20,
+                        }}
+                    >
                         <DateTimePicker
-                            testID="dateTimePicker"
                             value={date}
-                            mode={mode}
-                            display="spinner"
+                            mode="time"
                             onChange={onChange}
                             textColor={colors.onBackground}
                         />
-                    )}
-                    {isIos && isDateModalVisible && (
-                        <Button onPress={() => (mode === 'date' ? setMode('time') : handleClose())}>
-                            Next
-                        </Button>
-                    )}
-                </View>
-            </Modal>
+                        <Button onPress={() => handleClose()}>Save</Button>
+                    </View>
+                </Modal>
+            ) : (
+                isDateModalVisible && (
+                    <DateTimePicker value={date} mode="time" onChange={onChange} />
+                )
+            )}
         </Portal>
     );
 };

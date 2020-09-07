@@ -9,10 +9,7 @@ const isIos = Platform.OS === 'ios';
 const Lab6HeaderItems = () => {
     const { setDatePickerState } = useContext(Lab6Context);
 
-    const handleDateDiffPress = (i) => {
-        if (i !== 0) {
-            return;
-        }
+    const handleDateDiffPress = () => {
         setDatePickerState((oldState) => ({
             ...oldState,
             isVisible: true,

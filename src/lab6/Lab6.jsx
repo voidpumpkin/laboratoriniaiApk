@@ -12,7 +12,7 @@ const Lab6 = () => {
     const [firstText, setFirstText] = useState('12');
     const [secondText, setSecondText] = useState('pradinis tekstas');
     const [letterPos, setLetterPos] = useState(0);
-    const [isActive, setIsActive] = useState(false);
+    const [letterTickingText, setLetterTickingText] = useState(null);
 
     useEffect(() => {
         if (timeDiffrence === null) {
@@ -24,26 +24,26 @@ const Lab6 = () => {
     useEffect(() => {
         //Show letters one by one eatch second
         let interval = null;
-        if (isActive) {
+        if (letterTickingText) {
             interval = setInterval(() => {
                 setLetterPos((letterPos) => {
-                    if (letterPos + 1 >= firstText.length) {
-                        setIsActive(false);
+                    if (letterPos + 1 >= letterTickingText.length) {
+                        setLetterTickingText(null);
                         return letterPos;
                     }
                     return letterPos + 1;
                 });
             }, 1000);
-        } else if (!isActive && letterPos !== 0) {
+        } else if (!letterTickingText && letterPos !== 0) {
             clearInterval(interval);
         }
         return () => clearInterval(interval);
-    }, [firstText.length, isActive, letterPos]);
+    }, [firstText.length, letterTickingText, letterPos]);
 
     const handleItemPress = (text) => (itemPressed) => {
         if (itemPressed === 0) setSecondText(`pirmame laukelyje yra ${text.length} simboliai`);
         else if (itemPressed === 1) {
-            setIsActive(true);
+            setLetterTickingText(text);
             setLetterPos(0);
         }
     };
@@ -71,7 +71,7 @@ const Lab6 = () => {
                     onItemPress={handleItemPress(secondText)}
                     anchor={(props) => <Text {...props}>{secondText}</Text>}
                 />
-                <Text>{firstText[letterPos]}</Text>
+                {letterTickingText && <Text>{letterTickingText[letterPos]}</Text>}
             </View>
         </>
     );
