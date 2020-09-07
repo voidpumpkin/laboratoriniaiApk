@@ -5,6 +5,9 @@ import * as Battery from 'expo-battery';
 import setupNotifications from './setupNotifications';
 import Constants from 'expo-constants';
 
+const IS_WATCHING_BATTERY_KEY = 'isWatchingBattery';
+const BATTERY_CHECK_INTERVAL = 1000 * 60;
+
 setupNotifications();
 
 const Lab7Context = createContext('light');
@@ -15,17 +18,17 @@ const Lab7ContextProvider = ({ children }) => {
 
     useEffect(() => {
         (async () => {
-            const isWatching = await AsyncStorage.getItem('isWatchingBattery');
-            if (isWatching === 'false' || isWatching === 'true') {
+            const isWatching = await AsyncStorage.getItem(IS_WATCHING_BATTERY_KEY);
+            if (isWatching) {
                 setIsWatchingBattery(isWatching === 'true');
                 return;
             }
-            await AsyncStorage.setItem('isWatchingBattery', 'false');
+            await AsyncStorage.setItem(IS_WATCHING_BATTERY_KEY, 'false');
         })();
     }, []);
 
     useEffect(() => {
-        AsyncStorage.setItem('isWatchingBattery', `${isWatchingBattery}`);
+        AsyncStorage.setItem(IS_WATCHING_BATTERY_KEY, `${isWatchingBattery}`);
     }, [isWatchingBattery]);
 
     const spyBattery = useCallback(async () => {
@@ -50,7 +53,7 @@ const Lab7ContextProvider = ({ children }) => {
             spyBattery();
             return;
         }
-        let interval = setInterval(spyBattery, 1000 * 60);
+        let interval = setInterval(spyBattery, BATTERY_CHECK_INTERVAL);
         return () => clearInterval(interval);
     }, [isWatchingBattery, spyBattery]);
 

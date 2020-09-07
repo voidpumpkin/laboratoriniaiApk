@@ -37,7 +37,7 @@ const DatePickingModal = () => {
         if (!isIos) handleClose(selectedDate);
         setDate(selectedDate);
     };
-    console.log(datePickerState.isVisible, isDateModalVisible);
+
     return (
         <Portal>
             {isIos ? (
