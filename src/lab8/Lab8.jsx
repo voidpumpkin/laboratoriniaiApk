@@ -3,10 +3,10 @@ import { StyleSheet, Animated } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Svg from 'react-native-svg';
 import {
-    PanGestureHandler,
     State,
     PinchGestureHandler,
-    TapGestureHandler,
+    FlingGestureHandler,
+    Directions,
 } from 'react-native-gesture-handler';
 import figures from './figures';
 import { Audio } from 'expo-av';
@@ -21,13 +21,7 @@ const circle = figures.find(({ name }) => name === 'Circle');
 const Lab8 = () => {
     const { colors } = useTheme();
     const [figureindex, setFigureIndex] = useState(0);
-    const {
-        Component: FigureComponent,
-        isFingerInside,
-        getProps,
-        applyTransform,
-        getPropsInCircle,
-    } = figures[figureindex];
+    const { Component: FigureComponent, getProps, getPropsInCircle } = figures[figureindex];
     const [viewRect, setViewRect] = useState(null);
 
     const [figureProps, setFigureProps] = useState(null);
@@ -36,12 +30,13 @@ const Lab8 = () => {
     const [circleProps, setCircleProps] = useState(null);
     const [showCircle, setShowCircle] = useState(false);
 
-    const beginPanFigurePropsRef = useRef(null);
     const beginPinchCirclePropsRef = useRef(null);
     const swipeMinLengthRef = useRef(null);
 
     const successPlaybackInstanceRef = useRef(null);
     const failPlaybackInstanceRef = useRef(null);
+
+    const flingStartXRef = useRef(0);
 
     const setupSuccessSound = async () => {
         const { sound } = await Audio.Sound.createAsync(succesSound);
@@ -108,56 +103,31 @@ const Lab8 = () => {
         setFigureIndex(newIndex);
     };
 
-    const handlePanStateChange = (event) => {
-        const { translationX, state } = event.nativeEvent;
+    const handleFlingStateChange = (event) => {
+        const { state, x } = event.nativeEvent;
+        const translationX = flingStartXRef.current - x;
         switch (state) {
-            case State.BEGAN:
-                if (showFigure && isFingerInside(event.nativeEvent, figureProps)) {
-                    beginPanFigurePropsRef.current = figureProps;
-                }
+            case State.START:
+                flingStartXRef.current = x;
                 break;
-            case State.END:
-                if (beginPanFigurePropsRef.current) {
-                    beginPanFigurePropsRef.current = null;
-                    break;
-                }
+            case State.ACTIVE:
                 if (translationX > swipeMinLengthRef.current) {
                     updateFigureIndex('left');
                 } else if (translationX < -swipeMinLengthRef.current) {
                     updateFigureIndex('right');
                 }
                 break;
-            case State.CANCELLED:
-            case State.FAILED:
-                beginPanFigurePropsRef.current = null;
-                break;
-        }
-    };
-
-    const handlePanGestureEvent = (event) => {
-        const { translationX, translationY } = event.nativeEvent;
-        if (beginPanFigurePropsRef.current) {
-            setFigureProps({
-                ...figureProps,
-                ...applyTransform(beginPanFigurePropsRef.current, translationX, translationY),
-            });
-        }
-    };
-
-    const handleTapStateChangeEvent = (event) => {
-        if (event.nativeEvent.state === State.ACTIVE) {
-            setShowFigure(false);
         }
     };
 
     const handlePinchStateChangeEvent = (event) => {
-        const { state } = event.nativeEvent;
-        switch (state) {
+        switch (event.nativeEvent.state) {
             case State.BEGAN:
                 var newCircleprops = {
                     ...circle.getProps(viewRect, false),
                     fill: 'white',
                 };
+                setShowFigure(false);
                 setCircleProps(newCircleprops);
                 beginPinchCirclePropsRef.current = newCircleprops;
                 break;
@@ -171,6 +141,7 @@ const Lab8 = () => {
                 break;
             case State.CANCELLED:
             case State.FAILED:
+                setShowFigure(true);
                 setShowCircle(false);
                 beginPinchCirclePropsRef.current = null;
                 break;
@@ -178,12 +149,11 @@ const Lab8 = () => {
     };
 
     const handlePinchEvent = (event) => {
-        const { scale, focalX: cx, focalY: cy } = event.nativeEvent;
+        const { scale, focalX: cx, focalY: cy, numberOfPointers } = event.nativeEvent;
         if (!beginPinchCirclePropsRef.current || !circleProps) {
             return;
         }
-        if (!showCircle) {
-            setShowFigure(false);
+        if (!showCircle && numberOfPointers === 2) {
             setShowCircle(true);
         }
         setCircleProps({
@@ -199,26 +169,23 @@ const Lab8 = () => {
             onGestureEvent={handlePinchEvent}
             onHandlerStateChange={handlePinchStateChangeEvent}
         >
-            <TapGestureHandler maxDurationMs={100} onHandlerStateChange={handleTapStateChangeEvent}>
-                <PanGestureHandler
-                    onGestureEvent={handlePanGestureEvent}
-                    onHandlerStateChange={handlePanStateChange}
-                    maxPointers={1}
-                >
-                    <Animated.View
-                        style={[styles.panHandler, { backgroundColor: colors.background }]}
+            <FlingGestureHandler
+                onHandlerStateChange={handleFlingStateChange}
+                maxPointers={1}
+                direction={Directions.RIGHT | Directions.LEFT}
+            >
+                <Animated.View style={[styles.panHandler, { backgroundColor: colors.background }]}>
+                    <Svg
+                        height="100%"
+                        width="100%"
+                        onLayout={(event) => setViewRect(event.nativeEvent.layout)}
                     >
-                        <Svg
-                            height="100%"
-                            width="100%"
-                            onLayout={(event) => setViewRect(event.nativeEvent.layout)}
-                        >
-                            {showFigure && figureProps && <FigureComponent {...figureProps} />}
-                            {showCircle && circleProps && <circle.Component {...circleProps} />}
-                        </Svg>
-                    </Animated.View>
-                </PanGestureHandler>
-            </TapGestureHandler>
+                        {showFigure && figureProps && <FigureComponent {...figureProps} />}
+
+                        {showCircle && circleProps && <circle.Component {...circleProps} />}
+                    </Svg>
+                </Animated.View>
+            </FlingGestureHandler>
         </PinchGestureHandler>
     );
 };

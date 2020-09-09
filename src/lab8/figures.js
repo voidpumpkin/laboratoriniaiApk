@@ -9,15 +9,10 @@ function getRandom(min = 0, max = 1) {
     return Math.random() * (max - min) + min;
 }
 
-const calcCenter = (containerLength, length = 0) => containerLength / 2 - length / 2;
+const collectRotationValues = (rotationString) =>
+    rotationString.substring(7, rotationString.length - 1).split(',');
 
-const isFingerInsideRect = (nativeEvent, figureProps) => {
-    const { x, y, width, height } = figureProps;
-    const { x: eX, y: eY } = nativeEvent;
-    const x1 = +width + +x;
-    const y1 = +height + +y;
-    return eX < x1 && eY < y1 && eX > x && eY > y;
-};
+const calcCenter = (containerLength, length = 0) => containerLength / 2 - length / 2;
 
 const applyRectScale = (figureProps, scale) => {
     const width = +figureProps.width * scale;
@@ -29,23 +24,18 @@ const applyRectScale = (figureProps, scale) => {
     return { width, height, x, y };
 };
 
-const applyRectTranslation = ({ x, y }, translationX, translationY) => {
-    return {
-        x: Math.floor(translationX) + +x,
-        y: Math.floor(translationY) + +y,
-    };
-};
-
 const getRectPropsInCircle = (circleProps, figureProps, { playSucces, playFail }) => {
-    const { width, height } = figureProps;
+    const { width, height, transform } = figureProps;
     const widthR = +width / 2;
     const heightR = +height / 2;
     const rectR = widthR > heightR ? widthR : heightR;
+    const [rotation] = collectRotationValues(transform);
     if (rectR <= circleProps.r) {
         const x = circleProps.cx - widthR;
         const y = circleProps.cy - heightR;
+        const transform = `rotate(${rotation},${x + width / 2},${y + height / 2})`;
         playSucces();
-        return { ...figureProps, x, y };
+        return { ...figureProps, x, y, transform };
     }
     playFail();
     return figureProps;
@@ -55,14 +45,10 @@ const figures = [
     {
         name: 'Circle',
         Component: Circle,
-        isFingerInside: (nativeEvent, figureProps) => {
-            const { cx, cy, r } = figureProps;
-            const { x, y } = nativeEvent;
-            return Math.pow(+cx - +x, 2) + Math.pow(+cy - +y, 2) <= Math.pow(r, 2);
-        },
         getProps: (viewRect, shouldRandomize = true) => {
             const scale = shouldRandomize ? getRandom() : FIGURE_INITIAL_SCALE;
-            const radius = viewRect.width * scale;
+            const smallerAxis = viewRect.width < viewRect.height ? viewRect.width : viewRect.height;
+            const radius = (smallerAxis / 2) * scale;
             return {
                 cx: calcCenter(viewRect.width) + '',
                 cy: calcCenter(viewRect.height) + '',
@@ -72,12 +58,6 @@ const figures = [
         },
         applyScale: ({ r }, scale) => {
             return { r: +r * scale };
-        },
-        applyTransform: ({ cx, cy }, translationX, translationY) => {
-            return {
-                cx: Math.floor(translationX) + +cx,
-                cy: Math.floor(translationY) + +cy,
-            };
         },
         getPropsInCircle: (circleProps, figureProps, { playSucces, playFail }) => {
             if (figureProps.r <= circleProps.r) {
@@ -91,41 +71,45 @@ const figures = [
     {
         name: 'Square',
         Component: Rect,
-        isFingerInside: isFingerInsideRect,
-        getProps: (viewRect, shouldRandomize = true) => {
+        getProps: (viewRect, shouldRandomize = false) => {
             const scale = shouldRandomize ? getRandom() : FIGURE_INITIAL_SCALE;
             const width = viewRect.width * scale;
             const height = viewRect.width * scale;
+            const x = calcCenter(viewRect.width, width);
+            const y = calcCenter(viewRect.height, height);
+            const rotation = getRandom(0, 90);
             return {
-                x: calcCenter(viewRect.width, width) + '',
-                y: calcCenter(viewRect.height, height) + '',
+                x: x + '',
+                y: y + '',
                 width: width + '',
                 height: height + '',
                 fill: Colors.lightBlue500,
+                transform: `rotate(${rotation},${x + width / 2},${y + height / 2})`,
             };
         },
         applyScale: applyRectScale,
-        applyTransform: applyRectTranslation,
         getPropsInCircle: getRectPropsInCircle,
     },
     {
         name: 'Line',
         Component: Rect,
-        isFingerInside: isFingerInsideRect,
         getProps: (viewRect, shouldRandomize = true) => {
             const scale = shouldRandomize ? getRandom() : FIGURE_INITIAL_SCALE;
             const width = viewRect.width * LINE_WIDTH_SCALE;
             const height = viewRect.height * scale;
+            const x = calcCenter(viewRect.width, width);
+            const y = calcCenter(viewRect.height, height);
+            const rotation = getRandom(0, 90);
             return {
                 x: calcCenter(viewRect.width, width) + '',
                 y: calcCenter(viewRect.height, height) + '',
                 width: width + '',
                 height: height + '',
                 fill: Colors.red500,
+                transform: `rotate(${rotation},${x + width / 2},${y + height / 2})`,
             };
         },
         applyScale: applyRectScale,
-        applyTransform: applyRectTranslation,
         getPropsInCircle: getRectPropsInCircle,
     },
 ];
