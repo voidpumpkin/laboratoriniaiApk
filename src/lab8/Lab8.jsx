@@ -62,14 +62,8 @@ const Lab8 = () => {
     };
 
     useEffect(() => {
-        Audio.setAudioModeAsync({
-            allowsRecordingIOS: false,
-            interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-            playsInSilentModeIOS: true,
-            shouldDuckAndroid: true,
-            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
-            playThroughEarpieceAndroid: false,
-        });
+        //setup sounds
+        Audio.setAudioModeAsync({ playThroughEarpieceAndroid: false });
         setupSuccessSound();
         setupFailSound();
         return async () => {
@@ -174,15 +168,15 @@ const Lab8 = () => {
                 maxPointers={1}
                 direction={Directions.RIGHT | Directions.LEFT}
             >
+                {/* Required for ios */}
                 <Animated.View style={[styles.panHandler, { backgroundColor: colors.background }]}>
                     <Svg
                         height="100%"
                         width="100%"
                         onLayout={(event) => setViewRect(event.nativeEvent.layout)}
                     >
-                        {showFigure && figureProps && <FigureComponent {...figureProps} />}
-
                         {showCircle && circleProps && <circle.Component {...circleProps} />}
+                        {showFigure && figureProps && <FigureComponent {...figureProps} />}
                     </Svg>
                 </Animated.View>
             </FlingGestureHandler>
