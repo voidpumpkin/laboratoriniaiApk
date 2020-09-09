@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import { useTheme, List, Text, Colors } from 'react-native-paper';
-import { NAVIGATIONS } from '../constants';
 import students from './students.json';
 
 const { Item } = List;
 
-const Lab5 = ({ navigation, route }) => {
-    const { name, aCount, upperCaseCount, lowerCaseCount, voiceLettersCount } = route.params || {};
+const Lab5 = ({ navigation }) => {
     const { colors } = useTheme();
+    const [popUps, setPopups] = useState([]);
+    const { name, aCount, upperCaseCount, lowerCaseCount, voiceLettersCount } =
+        popUps[popUps.length - 1] || {};
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+            if (!popUps.length) {
+                return;
+            }
+            setPopups(popUps.slice(0, popUps.length - 1));
+            e.preventDefault();
+        });
+        return unsubscribe;
+    }, [navigation, popUps]);
 
     const handlePress = (pressedName) => {
         if (pressedName === name) {
@@ -16,17 +28,24 @@ const Lab5 = ({ navigation, route }) => {
         }
         const aCount = (pressedName.match(/a|A/) || []).length;
         if (aCount) {
-            navigation.push(NAVIGATIONS.LAB5, {
-                name: pressedName,
-                aCount,
-            });
+            setPopups([
+                ...popUps,
+                {
+                    name: pressedName,
+                    aCount,
+                },
+            ]);
         } else {
-            navigation.push(NAVIGATIONS.LAB5, {
-                name: pressedName,
-                upperCaseCount: (pressedName.match(/[A-Z]/) || []).length,
-                lowerCaseCount: (pressedName.match(/[a-z]/) || []).length,
-                voiceLettersCount: (pressedName.match(/[a|A|e|E|i|I|y|Y|u|U|o|O]/) || []).length,
-            });
+            setPopups([
+                ...popUps,
+                {
+                    name: pressedName,
+                    upperCaseCount: (pressedName.match(/[A-Z]/) || []).length,
+                    lowerCaseCount: (pressedName.match(/[a-z]/) || []).length,
+                    voiceLettersCount: (pressedName.match(/[a|A|e|E|i|I|y|Y|u|U|o|O]/) || [])
+                        .length,
+                },
+            ]);
         }
     };
 
@@ -44,7 +63,7 @@ const Lab5 = ({ navigation, route }) => {
                     <Item title={first_name} key={id} onPress={() => handlePress(first_name)} />
                 ))}
             </ScrollView>
-            {name && (
+            {popUps[popUps.length - 1] && (
                 <View style={styles.popUp}>
                     <Text>Vardas: {name}</Text>
                     {aCount && <Text>A ir a raidziu varde yra: {aCount}</Text>}
