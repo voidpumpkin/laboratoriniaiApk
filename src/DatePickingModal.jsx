@@ -2,13 +2,13 @@ import React, { useState, useContext } from 'react';
 import { View, Platform } from 'react-native';
 import { Portal, Modal, useTheme, Button } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Lab6Context from './Lab6Context';
+import GlobalContext from './GlobalContext';
 
 const isIos = Platform.OS === 'ios';
 
 const DatePickingModal = () => {
     const { colors } = useTheme();
-    const { datePickerState, setDatePickerState } = useContext(Lab6Context);
+    const { datePickerState, setDatePickerState } = useContext(GlobalContext);
     const [date, setDate] = useState(new Date());
     const isDateModalVisible = datePickerState.isVisible;
 
@@ -26,6 +26,7 @@ const DatePickingModal = () => {
             ...oldState,
             timeDiffrence,
             isVisible: false,
+            selectedDate,
         }));
     };
 

@@ -9,6 +9,7 @@
         "lint": "eslint ."
     },
     "dependencies": {
+        "@react-native-async-storage/async-storage": "^1.13.2",
         "@react-native-community/datetimepicker": "2.4.0",
         "@react-native-community/masked-view": "0.1.10",
         "@react-navigation/native": "^5.7.3",
@@ -23,6 +24,7 @@
         "expo-permissions": "~9.0.1",
         "expo-sqlite": "~8.2.1",
         "expo-status-bar": "^1.0.2",
+        "expo-web-browser": "~8.3.1",
         "react": "~16.11.0",
         "react-dom": "~16.11.0",
         "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
