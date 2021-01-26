@@ -19,5 +19,5 @@ module.exports = {
     //   insertPragma: false, //false
     //   proseWrap: 'preserve', //"<always|never|preserve>"
     //   htmlWhitespaceSensitivity: 'css', //"<css|strict|ignore>"
-    //   endOfLine: 'auto' //"<auto|lf|crlf|cr>"
+    endOfLine: 'auto', //"<auto|lf|crlf|cr>"
 };

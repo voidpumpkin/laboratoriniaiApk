@@ -1,7 +1,14 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Button, useTheme } from 'react-native-paper';
+import { View, StyleSheet, BackHandler } from 'react-native';
+import { Button, useTheme, TextInput } from 'react-native-paper';
 import { NAVIGATIONS } from './constants';
+import * as FileSystem from 'expo-file-system';
+import * as MailComposer from 'expo-mail-composer';
+import * as Notifications from 'expo-notifications';
+
+import setupNotifications from './utils/setupNotifications';
+
+setupNotifications();
 
 const navigationsArr = Object.entries(NAVIGATIONS);
 // eslint-disable-next-line no-unused-vars
@@ -9,6 +16,7 @@ const [_, ...navigationsForButtons] = navigationsArr;
 
 const HomeScreen = ({ navigation }) => {
     const { colors } = useTheme();
+    const [text, setText] = React.useState('');
     return (
         <View
             style={[
@@ -29,6 +37,36 @@ const HomeScreen = ({ navigation }) => {
                     {NAVIGATION}
                 </Button>
             ))}
+            <Button
+                style={styles.button}
+                mode="contained"
+                onPress={async () => {
+                    const fileUri = FileSystem.documentDirectory + 'rez.txt';
+                    const fileText = await FileSystem.readAsStringAsync(fileUri);
+                    setText(fileText);
+                    await Notifications.scheduleNotificationAsync({
+                        content: {
+                            title: `Email atidarytas su nuskaityta informacija `,
+                        },
+                        trigger: null,
+                    });
+                    MailComposer.composeAsync({
+                        body: fileText,
+                    });
+                }}
+            >
+                Nuskaityti informaciją
+            </Button>
+            <Button style={styles.button} mode="contained" onPress={BackHandler.exitApp}>
+                Uždaryti programą
+            </Button>
+            <TextInput
+                style={styles.flexiukas}
+                label="Iš failo nuskaityta informacija"
+                value={text}
+                mode="outlined"
+                onChangeText={(text) => setText(text)}
+            />
         </View>
     );
 };
@@ -42,5 +80,9 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 20,
+    },
+    flexiukas: {
+        flex: 1,
+        width: '100%',
     },
 });

@@ -6,15 +6,8 @@ import { useTheme } from 'react-native-paper';
 import { NAVIGATIONS } from './constants';
 import Header from './Header';
 import HomeScreen from './HomeScreen';
-import Lab2 from './lab2/Lab2';
-import Lab3 from './lab3/Lab3';
-import Lab4 from './lab4/Lab4';
-import Lab5 from './lab5/Lab5';
-import screenOptionsLab5 from './lab5/screenOptions.json';
-import Lab6 from './lab6/Lab6';
-import Lab7 from './lab7/Lab7';
-import Lab8 from './lab8/Lab8';
-import Lab9 from './lab9/Lab9';
+import Scrn2 from './scrn2/scrn2';
+import Info from './info/info';
 
 const { Navigator: StackNavigator, Screen } = createStackNavigator();
 
@@ -33,14 +26,8 @@ const Navigator = () => {
                 }}
             >
                 <Screen name={NAVIGATIONS.HOME} component={HomeScreen} />
-                <Screen name={NAVIGATIONS.LAB2} component={Lab2} />
-                <Screen name={NAVIGATIONS.LAB3} component={Lab3} />
-                <Screen name={NAVIGATIONS.LAB4} component={Lab4} />
-                <Screen name={NAVIGATIONS.LAB5} component={Lab5} options={screenOptionsLab5} />
-                <Screen name={NAVIGATIONS.LAB6} component={Lab6} />
-                <Screen name={NAVIGATIONS.LAB7} component={Lab7} />
-                <Screen name={NAVIGATIONS.LAB8} component={Lab8} />
-                <Screen name={NAVIGATIONS.LAB9} component={Lab9} />
+                <Screen name={NAVIGATIONS.SCRN2} component={Scrn2} />
+                <Screen name={NAVIGATIONS.INFO} component={Info} />
             </StackNavigator>
         </NavigationContainer>
     );
